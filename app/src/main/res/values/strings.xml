@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyGallery</string>
+    <string name="menu_favorite">favorite</string>
+    <string name="menu_search">search</string>
+</resources>

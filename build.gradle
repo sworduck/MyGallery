@@ -1,0 +1,42 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext.kotlin_version = "1.8.0"
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.20"
+        classpath "io.realm:realm-gradle-plugin:10.9.0"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.3.0"
+        classpath 'com.google.gms:google-services:4.3.13'
+
+        // Check that you have the Google services Gradle plugin v4.3.2 or later
+        // (if not, add it).
+        classpath 'com.google.gms:google-services:4.3.13'
+
+        // Add the Crashlytics Gradle plugin
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.1'
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.38.1'
+    }
+}
+ext{
+    glide_version = "4.12.0"
+    glide_progress_version = "1.4.0"
+    room_version = "2.4.2"
+    okhttp_version = "5.0.0-alpha.2"
+    retrofit_version = "2.9.0"
+    coroutines_version = "1.4.1"
+    hilt_version = "2.38.1"
+    hilt_jetpack_version = "1.0.0-alpha03"
+}
+
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

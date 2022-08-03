@@ -8,5 +8,5 @@ data class PictureCloud(
     val width: Int,
     val height: Int,
     val url: String,
-    @SerializedName("download_url") val downloadUrl: String
+    @SerializedName("download_url") val downloadUrl: String,
 )

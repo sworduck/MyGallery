@@ -19,10 +19,10 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val pictureRepository: PictureRepository,
-): ViewModel() {
+) : ViewModel() {
 
-    private var _status:MutableLiveData<Status> = MutableLiveData<Status>()
-    val status:LiveData<Status> = _status
+    private var _status: MutableLiveData<Status> = MutableLiveData<Status>()
+    val status: LiveData<Status> = _status
 
     private val pictureList: Flow<PagingData<Picture>> =
         Pager(
@@ -47,14 +47,14 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun checkLoadState(adapter: FragmentAdapter){
+    private fun checkLoadState(adapter: FragmentAdapter) {
         viewModelScope.launch {
-            adapter.loadStateFlow.collectLatest { loadState->
-                when(val currentState = loadState.refresh){
-                    is LoadState.Loading ->{
+            adapter.loadStateFlow.collectLatest { loadState ->
+                when (val currentState = loadState.refresh) {
+                    is LoadState.Loading -> {
                         _status.value = Status.Success()
                     }
-                    is LoadState.Error ->{
+                    is LoadState.Error -> {
                         _status.value = Status.Fail()
                     }
                 }
@@ -62,7 +62,7 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun addPicture(picture: Picture){
+    fun addPicture(picture: Picture) {
         pictureRepository.savePicture(Mapper.pictureToPictureEntity(picture))
     }
 

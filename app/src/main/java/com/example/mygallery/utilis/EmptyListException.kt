@@ -1,3 +1,3 @@
 package com.example.mygallery.utilis
 
-class EmptyListException: Exception()
+class EmptyListException : Exception()

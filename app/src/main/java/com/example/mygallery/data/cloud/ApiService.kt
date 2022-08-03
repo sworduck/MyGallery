@@ -6,14 +6,14 @@ import retrofit2.http.Query
 
 interface ApiService {
 
-    companion object{
+    companion object {
         const val BASE_URL = "https://picsum.photos/"
     }
 
     @GET("/v2/list")
     suspend fun fetchPictureList(
         @Query("page") page: Int,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
     ): List<PictureCloud>
 
     @GET("/id/{photoId}/info")

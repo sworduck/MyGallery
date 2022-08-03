@@ -9,13 +9,13 @@ import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class CloudDataSource @Inject constructor(private val apiService: ApiService) {
-    suspend fun fetchPhotoList(page:Int,limit:Int): Flow<List<Picture>> {
-        return flow{
-            emit(apiService.fetchPictureList(page,limit).map { Mapper.pictureCloudToPicture(it)})
+    suspend fun fetchPhotoList(page: Int, limit: Int): Flow<List<Picture>> {
+        return flow {
+            emit(apiService.fetchPictureList(page, limit).map { Mapper.pictureCloudToPicture(it) })
         }.flowOn(Dispatchers.IO)
     }
 
-    fun getPictureCloudPagingSource():PictureCloudPagingSource{
+    fun getPictureCloudPagingSource(): PictureCloudPagingSource {
         return PictureCloudPagingSource(apiService)
     }
 }

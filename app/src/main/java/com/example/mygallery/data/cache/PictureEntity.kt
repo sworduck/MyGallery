@@ -1,6 +1,5 @@
 package com.example.mygallery.data.cache
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -11,8 +10,9 @@ data class PictureEntity(
     val width: Int,
     val height: Int,
     val url: String,
-    val favorite:Boolean,
+    val favorite: Boolean,
     val downloadUrl: String,
-){
-    @PrimaryKey(autoGenerate = true)var uid:Int = 0
+) {
+    @PrimaryKey(autoGenerate = true)
+    var uid: Int = 0
 }

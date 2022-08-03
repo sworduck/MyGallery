@@ -23,7 +23,7 @@ class FavoriteViewModel @Inject constructor(
     private val pictureRepository: PictureRepository,
 ) : ViewModel() {
 
-    private var _status:MutableLiveData<Status> = MutableLiveData<Status>()
+    private var _status: MutableLiveData<Status> = MutableLiveData<Status>()
     val status: LiveData<Status> = _status
 
     private val _removeItemFlow = MutableStateFlow(mutableListOf<Picture>())
@@ -57,14 +57,14 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
-    private fun checkLoadState(adapter: FragmentAdapter){
+    private fun checkLoadState(adapter: FragmentAdapter) {
         viewModelScope.launch {
-            adapter.loadStateFlow.collectLatest { loadState->
-                when(val currentState = loadState.refresh){
-                    is LoadState.Loading ->{
+            adapter.loadStateFlow.collectLatest { loadState ->
+                when (val currentState = loadState.refresh) {
+                    is LoadState.Loading -> {
                         _status.value = Status.Success()
                     }
-                    is LoadState.Error ->{
+                    is LoadState.Error -> {
                         _status.value = Status.Fail()
                     }
                 }
@@ -86,7 +86,7 @@ class FavoriteViewModel @Inject constructor(
     }
 
     private fun removePicture(picture: Picture) {
-            pictureRepository.removePicture(Mapper.pictureToPictureEntity(picture))
+        pictureRepository.removePicture(Mapper.pictureToPictureEntity(picture))
     }
 
 }

@@ -40,8 +40,8 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initObservers() {
-        vm.status.observe(viewLifecycleOwner){
-            when(vm.status.value){
+        vm.status.observe(viewLifecycleOwner) {
+            when (vm.status.value) {
                 is Status.Fail -> {
                     print("fail")
                     binding.searchRecycler.isVisible = false
@@ -50,7 +50,7 @@ class FavoriteFragment : Fragment() {
                 is Status.Success -> {
                     print("success")
                     binding.searchRecycler.isVisible = true
-                    binding.layoutEmptyList .isVisible = false
+                    binding.layoutEmptyList.isVisible = false
                 }
             }
         }

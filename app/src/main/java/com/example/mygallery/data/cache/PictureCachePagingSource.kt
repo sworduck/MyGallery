@@ -17,9 +17,10 @@ class PictureCachePagingSource(private val pictureDao: PictureDao): PagingSource
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Picture> {
-        val pictureListCache = pictureDao.getAllPicture().map { picture-> Mapper.pictureEntityToPicture(picture)}
-        val page = params.key?: 1
-        return if(pictureListCache.isEmpty()){
+        val pictureListCache =
+            pictureDao.getAllPicture().map { picture -> Mapper.pictureEntityToPicture(picture) }
+        val page = params.key ?: 1
+        return if (pictureListCache.isEmpty()) {
             LoadResult.Error(EmptyListException())
         } else {
             LoadResult.Page(

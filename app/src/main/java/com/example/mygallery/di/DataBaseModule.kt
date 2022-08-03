@@ -41,8 +41,11 @@ object DataBaseModule {
 
     @Provides
     @Singleton
-    fun providePictureRepository(cloudDataSource: CloudDataSource, cacheDataSource: CacheDataSource): PictureRepository {
-        return PictureRepository(cloudDataSource,cacheDataSource)
+    fun providePictureRepository(
+        cloudDataSource: CloudDataSource,
+        cacheDataSource: CacheDataSource,
+    ): PictureRepository {
+        return PictureRepository(cloudDataSource, cacheDataSource)
     }
 
 }

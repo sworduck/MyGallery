@@ -7,16 +7,12 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.paging.LoadState
 import com.example.mygallery.databinding.SearchFragmentBinding
 import com.example.mygallery.domain.Picture
-import com.example.mygallery.domain.Status
-import com.example.mygallery.domain.Status.*
+import com.example.mygallery.domain.Status.Fail
+import com.example.mygallery.domain.Status.Success
 import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -48,8 +44,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun initObservers() {
-        vm.status.observe(viewLifecycleOwner){
-            when(vm.status.value){
+        vm.status.observe(viewLifecycleOwner) {
+            when (vm.status.value) {
                 is Fail -> {
                     print("fail")
                     binding.searchRecycler.isVisible = false

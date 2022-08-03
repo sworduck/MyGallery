@@ -2,7 +2,6 @@ package com.example.mygallery.data.cache
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 
 @Database(entities = [PictureEntity::class],
     version = 4,

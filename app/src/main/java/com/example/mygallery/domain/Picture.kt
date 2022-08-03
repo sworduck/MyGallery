@@ -6,6 +6,6 @@ data class Picture(
     val width: Int,
     val height: Int,
     val url: String,
-    var favorite:Boolean,
-    val downloadUrl: String
+    var favorite: Boolean,
+    val downloadUrl: String,
 )

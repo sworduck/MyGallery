@@ -12,6 +12,7 @@ class Mapper {
                 pictureEntity.width,
                 pictureEntity.height,
                 pictureEntity.url,
+                pictureEntity.favorite,
                 pictureEntity.downloadUrl)
         }
 
@@ -21,6 +22,7 @@ class Mapper {
                 pictureCloud.width,
                 pictureCloud.height,
                 pictureCloud.url,
+                false,
                 pictureCloud.downloadUrl)
         }
 
@@ -30,6 +32,7 @@ class Mapper {
                 picture.width,
                 picture.height,
                 picture.url,
+                picture.favorite,
                 picture.downloadUrl)
         }
     }

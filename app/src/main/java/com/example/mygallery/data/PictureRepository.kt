@@ -22,7 +22,7 @@ class PictureRepository(private val pictureCloudDataSource: CloudDataSource,
         pictureCacheDataSource.savePicture(Mapper.pictureToPictureEntity(picture))
     }
 
-    suspend fun fetchFavoritePictureList(page:Int,limit: Int):List<PictureEntity>{
-        return pictureCacheDataSource.fetchPictureList()
+    fun fetchFavoritePictureList(page:Int,limit: Int): Flow<List<Picture>>{
+        return pictureCacheDataSource.fetchPictureList(limit,10)
     }
 }

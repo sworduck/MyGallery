@@ -1,30 +1,28 @@
 package com.example.mygallery.presentation.favorite
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.example.mygallery.databinding.FavoriteFragmentBinding
-import com.example.mygallery.presentation.FragmentAdapter
+import com.example.mygallery.domain.Picture
+import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FavoriteFragment : Fragment() {
 
     private val vm: FavoriteViewModel by viewModels()
-    private val adapter: FragmentAdapter = FragmentAdapter()
-    private lateinit var binding:FavoriteFragmentBinding
+    private val favoriteAdapter: FragmentAdapter = FragmentAdapter(::onFeaturedClick)
+    private lateinit var binding: FavoriteFragmentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        binding = FavoriteFragmentBinding.inflate(inflater,container,false)
+        binding = FavoriteFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -35,7 +33,7 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initView() {
-        binding.searchRecycler.adapter = adapter
+        initRecyclerView()
         setupView()
     }
 
@@ -43,10 +41,20 @@ class FavoriteFragment : Fragment() {
 
     }
 
+    private fun initRecyclerView() {
+        binding.searchRecycler.apply {
+            adapter = favoriteAdapter
+        }
+    }
+
     private fun setupView() {
-        lifecycleScope.launch {
-            vm.pictureList.collectLatest { pagedData ->
-                adapter.submitData(pagedData)
+        vm.bindPaging(favoriteAdapter)
+    }
+
+    private fun onFeaturedClick(picture: Picture) {
+        when (picture.favorite) {
+            true -> {
+                vm.remove(picture)
             }
         }
     }

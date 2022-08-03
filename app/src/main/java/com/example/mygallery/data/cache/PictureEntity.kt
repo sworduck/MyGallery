@@ -11,6 +11,7 @@ data class PictureEntity(
     val width: Int,
     val height: Int,
     val url: String,
+    val favorite:Boolean,
     val downloadUrl: String,
 ){
     @PrimaryKey(autoGenerate = true)var uid:Int = 0

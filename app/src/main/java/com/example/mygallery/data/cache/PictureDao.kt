@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PictureDao {
-    @Query("SELECT * FROM pictureEntity")
-    fun getAllPicture(): List<PictureEntity>
+    @Query("SELECT * FROM pictureEntity ORDER BY id ASC LIMIT :limit OFFSET :offset")
+    suspend fun getAllPicture(limit:Int,offset:Int): List<PictureEntity>
 
     @Insert
     fun insert(vararg pictureEntity: PictureEntity)
 
-    @Delete
-    fun delete(pictureEntity:PictureEntity)
+    @Query("DELETE FROM pictureEntity WHERE id = :id")
+    fun delete(id:Int)
 
     @Query("DELETE FROM pictureEntity")
     fun deleteAll()

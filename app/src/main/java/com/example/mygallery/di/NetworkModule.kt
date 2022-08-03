@@ -1,6 +1,7 @@
 package com.example.mygallery.di
 
 import com.example.mygallery.data.cloud.ApiService
+import com.example.mygallery.data.cloud.CloudDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +30,12 @@ object NetworkModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudDataSource(apiService: ApiService): CloudDataSource {
+        return CloudDataSource(apiService)
     }
 
     /*

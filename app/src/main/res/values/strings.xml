@@ -2,4 +2,5 @@
     <string name="app_name">MyGallery</string>
     <string name="menu_favorite">favorite</string>
     <string name="menu_search">search</string>
+    <string name="retry">retry</string>
 </resources>

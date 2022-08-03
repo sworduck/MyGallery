@@ -1,4 +1,4 @@
-package com.example.mygallery.presentation
+package com.example.mygallery.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.example.mygallery.domain.Picture

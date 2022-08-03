@@ -10,7 +10,10 @@ class PictureCachePagingSource(private val pictureDao: PictureDao): PagingSource
 
 
     override fun getRefreshKey(state: PagingState<Int, Picture>): Int? {
-        TODO("Not yet implemented")
+        return state.anchorPosition?.let { anchorPosition ->
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+        }
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Picture> {
@@ -21,7 +24,7 @@ class PictureCachePagingSource(private val pictureDao: PictureDao): PagingSource
         val range = startKey.until(startKey + params.loadSize)
 
         //val pictureCache = service.fetchPhotos(startKey,10).map { PictureCloudToPictureDomainMapper().map(it) }
-        val pictureListCache = pictureDao.getAllPicture().map { picture-> Mapper.pictureEntityToPicture(picture)}
+        val pictureListCache = pictureDao.getAllPicture(startKey,10).map { picture-> Mapper.pictureEntityToPicture(picture)}
 
         return LoadResult.Page(
             data = pictureListCache,

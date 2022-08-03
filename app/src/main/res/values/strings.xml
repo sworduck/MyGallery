@@ -3,4 +3,6 @@
     <string name="menu_favorite">favorite</string>
     <string name="menu_search">search</string>
     <string name="retry">retry</string>
+    <string name="error_message_network">Please check your internet connection</string>
+    <string name="btn_retry">retry</string>
 </resources>

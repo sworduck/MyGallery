@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import com.example.mygallery.databinding.SearchFragmentBinding
 import com.example.mygallery.domain.Picture
+import com.example.mygallery.domain.Status
+import com.example.mygallery.domain.Status.*
 import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -41,6 +45,20 @@ class SearchFragment : Fragment() {
     }
 
     private fun initObservers() {
+        vm.status.observe(viewLifecycleOwner){
+            when(vm.status.value){
+                is Fail -> {
+                    print("fail")
+                    binding.searchRecycler.isVisible = false
+                    binding.layoutErrorNetwork.isVisible = true
+                }
+                is Success -> {
+                    print("success")
+                    binding.searchRecycler.isVisible = true
+                    binding.layoutErrorNetwork.isVisible = false
+                }
+            }
+        }
     }
 
 

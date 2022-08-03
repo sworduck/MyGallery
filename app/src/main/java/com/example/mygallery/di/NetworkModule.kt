@@ -8,9 +8,10 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
+import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
 
@@ -20,9 +21,11 @@ object NetworkModule {
 
     @Singleton
     @Provides
-    fun provideRetrofit(): Retrofit =
+    fun provideRetrofit(okHttpClient: OkHttpClient, converterFactory: Converter.Factory): Retrofit =
         Retrofit.Builder()
             .baseUrl(ApiService.BASE_URL)
+            .client(okHttpClient)
+            //.addConverterFactory(converterFactory)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -38,21 +41,19 @@ object NetworkModule {
         return CloudDataSource(apiService)
     }
 
-    /*
     @Provides
     @Singleton
-    fun providesHttpClient(): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor()
-            loggingInterceptor.level = HttpLoggingInterceptor.Level.NONE
+    fun provideMoshiConverterFactory(): Converter.Factory = MoshiConverterFactory.create()
 
-        val client = OkHttpClient.Builder()
-        client.readTimeout(60, TimeUnit.SECONDS)
-        client.writeTimeout(60, TimeUnit.SECONDS)
-        client.connectTimeout(60, TimeUnit.SECONDS)
-        client.addInterceptor(loggingInterceptor)
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
 
-        return client.build()
-    }
-
-     */
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 }

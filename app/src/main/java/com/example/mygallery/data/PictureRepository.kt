@@ -1,19 +1,20 @@
 package com.example.mygallery.data
 
 import com.example.mygallery.data.cache.CacheDataSource
+import com.example.mygallery.data.cache.PictureCachePagingSource
 import com.example.mygallery.data.cache.PictureEntity
 import com.example.mygallery.data.cloud.CloudDataSource
+import com.example.mygallery.data.cloud.PictureCloudPagingSource
 import com.example.mygallery.domain.Picture
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class PictureRepository(private val pictureCloudDataSource: CloudDataSource,
+class PictureRepository @Inject constructor (private val pictureCloudDataSource: CloudDataSource,
                         private val pictureCacheDataSource: CacheDataSource,) {
-    /*
-    suspend fun fetchPhotoList(page:Long,limit:Int):List<Picture>{
-        return apiService.fetchPhotos(page,limit).map { pictureCloudToPictureDomain.map(it) }
-    }
 
-     */
     suspend fun fetchPictureList(page:Int,limit:Int): Flow<List<Picture>>{
         return pictureCloudDataSource.fetchPhotoList(page,limit)
     }
@@ -22,7 +23,27 @@ class PictureRepository(private val pictureCloudDataSource: CloudDataSource,
         pictureCacheDataSource.savePicture(Mapper.pictureToPictureEntity(picture))
     }
 
-    fun fetchFavoritePictureList(page:Int,limit: Int): Flow<List<Picture>>{
-        return pictureCacheDataSource.fetchPictureList(limit,10)
+    fun fetchFavoritePictureList(): Flow<List<Picture>>{
+        return pictureCacheDataSource.fetchPictureList()
+    }
+
+    fun getPictureCachePagingSource(): PictureCachePagingSource {
+        return pictureCacheDataSource.getPictureCachePagingSource()
+    }
+
+    fun getPictureCloudPagingSource(): PictureCloudPagingSource {
+        return pictureCloudDataSource.getPictureCloudPagingSource()
+    }
+
+    fun savePicture(picture:PictureEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+        pictureCacheDataSource.savePicture(picture)
+        }
+    }
+
+    fun removePicture(picture: PictureEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+            pictureCacheDataSource.removePicture(picture)
+        }
     }
 }

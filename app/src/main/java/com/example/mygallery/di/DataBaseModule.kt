@@ -2,9 +2,12 @@ package com.example.mygallery.di
 
 import android.content.Context
 import androidx.room.Room
+import com.example.mygallery.data.PictureRepository
 import com.example.mygallery.data.cache.CacheDataSource
 import com.example.mygallery.data.cache.PictureDao
 import com.example.mygallery.data.cache.PictureDataBase
+import com.example.mygallery.data.cloud.CloudDataSource
+import com.example.mygallery.domain.PictureDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,4 +39,11 @@ object DataBaseModule {
     fun provideCacheDataSource(dao: PictureDao): CacheDataSource {
         return CacheDataSource(dao)
     }
+
+    @Provides
+    @Singleton
+    fun providePictureRepository(cloudDataSource: CloudDataSource, cacheDataSource: CacheDataSource): PictureRepository {
+        return PictureRepository(cloudDataSource,cacheDataSource)
+    }
+
 }

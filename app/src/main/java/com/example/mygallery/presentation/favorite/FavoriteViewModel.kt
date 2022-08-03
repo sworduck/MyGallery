@@ -1,10 +1,14 @@
 package com.example.mygallery.presentation.favorite
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
+import com.example.mygallery.data.Mapper
+import com.example.mygallery.data.PictureRepository
 import com.example.mygallery.data.cache.CacheDataSource
 import com.example.mygallery.domain.Picture
+import com.example.mygallery.domain.Status
 import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -18,22 +22,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val characterListFromCache: CacheDataSource,
+    private val pictureRepository: PictureRepository,
 ) : ViewModel() {
+
+    var status = MutableLiveData<Status>()
 
     private val pictureList: Flow<PagingData<Picture>> =
         Pager(
             config = PagingConfig(
-                pageSize = 10,
+                pageSize = 1,
                 enablePlaceholders = true,
-                maxSize = 200
+                maxSize = 20,
+                initialLoadSize = 1
             )
         ) {
-            characterListFromCache.getPictureCachePagingSource()
+            pictureRepository.getPictureCachePagingSource()
         }.flow
 
     private val _removeItemFlow = MutableStateFlow(mutableListOf<Picture>())
-    private val removedItemsFlow: Flow<MutableList<Picture>> get() = _removeItemFlow
+    private val removedItemsFlow: Flow<List<Picture>> = _removeItemFlow
 
     fun bindPaging(adapter: FragmentAdapter) {
         viewModelScope.launch {
@@ -46,7 +53,6 @@ class FavoriteViewModel @Inject constructor(
                 }
                 .collectLatest {
                     adapter.submitData(it)
-                    println(it)
                 }
         }
     }
@@ -60,6 +66,12 @@ class FavoriteViewModel @Inject constructor(
         val list = mutableListOf(item)
         list.addAll(removes)
         _removeItemFlow.value = list
+
+        removePicture(item)
+    }
+
+    private fun removePicture(picture: Picture) {
+            pictureRepository.removePicture(Mapper.pictureToPictureEntity(picture))
     }
 
 }

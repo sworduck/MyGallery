@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [PictureEntity::class],
-    version = 3,
+    version = 4,
     exportSchema = false)
 abstract class PictureDataBase : RoomDatabase() {
     companion object {

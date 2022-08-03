@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.flowOn
 
 
 class CacheDataSource(private val pictureDao: PictureDao) {
-    fun fetchPictureList(page:Int,limit:Int): Flow<List<Picture>> {
+    fun fetchPictureList(): Flow<List<Picture>> {
         return flow {
-            emit( pictureDao.getAllPicture(limit,10).map { Mapper.pictureEntityToPicture(it) })
+            emit( pictureDao.getAllPicture().map { Mapper.pictureEntityToPicture(it) })
         }.flowOn(Dispatchers.IO)
     }
 

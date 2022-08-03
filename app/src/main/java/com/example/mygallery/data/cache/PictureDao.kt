@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PictureDao {
-    @Query("SELECT * FROM pictureEntity ORDER BY id ASC LIMIT :limit OFFSET :offset")
-    suspend fun getAllPicture(limit:Int,offset:Int): List<PictureEntity>
+    @Query("SELECT * FROM pictureEntity")
+    suspend fun getAllPicture(): List<PictureEntity>
 
     @Insert
     fun insert(vararg pictureEntity: PictureEntity)

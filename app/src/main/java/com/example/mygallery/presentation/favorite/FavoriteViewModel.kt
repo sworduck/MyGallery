@@ -1,18 +1,16 @@
 package com.example.mygallery.presentation.favorite
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import com.example.mygallery.data.Mapper
 import com.example.mygallery.data.PictureRepository
-import com.example.mygallery.data.cache.CacheDataSource
 import com.example.mygallery.domain.Picture
 import com.example.mygallery.domain.Status
 import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -25,7 +23,11 @@ class FavoriteViewModel @Inject constructor(
     private val pictureRepository: PictureRepository,
 ) : ViewModel() {
 
-    var status = MutableLiveData<Status>()
+    private var _status:MutableLiveData<Status> = MutableLiveData<Status>()
+    val status: LiveData<Status> = _status
+
+    private val _removeItemFlow = MutableStateFlow(mutableListOf<Picture>())
+    private val removedItemsFlow: Flow<List<Picture>> = _removeItemFlow
 
     private val pictureList: Flow<PagingData<Picture>> =
         Pager(
@@ -39,10 +41,8 @@ class FavoriteViewModel @Inject constructor(
             pictureRepository.getPictureCachePagingSource()
         }.flow
 
-    private val _removeItemFlow = MutableStateFlow(mutableListOf<Picture>())
-    private val removedItemsFlow: Flow<List<Picture>> = _removeItemFlow
-
     fun bindPaging(adapter: FragmentAdapter) {
+        checkLoadState(adapter)
         viewModelScope.launch {
             pictureList
                 .cachedIn(viewModelScope)
@@ -54,6 +54,21 @@ class FavoriteViewModel @Inject constructor(
                 .collectLatest {
                     adapter.submitData(it)
                 }
+        }
+    }
+
+    private fun checkLoadState(adapter: FragmentAdapter){
+        viewModelScope.launch {
+            adapter.loadStateFlow.collectLatest { loadState->
+                when(val currentState = loadState.refresh){
+                    is LoadState.Loading ->{
+                        _status.value = Status.Success()
+                    }
+                    is LoadState.Error ->{
+                        _status.value = Status.Fail()
+                    }
+                }
+            }
         }
     }
 

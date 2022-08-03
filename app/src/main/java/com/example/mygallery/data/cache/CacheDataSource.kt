@@ -10,10 +10,8 @@ import kotlinx.coroutines.flow.flowOn
 
 
 class CacheDataSource(private val pictureDao: PictureDao) {
-    fun fetchPictureList(): Flow<List<Picture>> {
-        return flow {
-            emit( pictureDao.getAllPicture().map { Mapper.pictureEntityToPicture(it) })
-        }.flowOn(Dispatchers.IO)
+    suspend fun fetchPictureList(): List<Picture> {
+        return pictureDao.getAllPicture().map { Mapper.pictureEntityToPicture(it) }
     }
 
     fun savePicture(picture:PictureEntity){

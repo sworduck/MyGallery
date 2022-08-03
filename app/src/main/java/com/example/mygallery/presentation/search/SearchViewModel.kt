@@ -1,6 +1,5 @@
 package com.example.mygallery.presentation.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,7 +55,7 @@ class SearchViewModel @Inject constructor(
                         _status.value = Status.Success()
                     }
                     is LoadState.Error ->{
-                        _status.value = Status.Fail(currentState.error.message.toString())
+                        _status.value = Status.Fail()
                     }
                 }
             }
@@ -69,5 +68,9 @@ class SearchViewModel @Inject constructor(
 
     fun removePicture(picture: Picture) {
         pictureRepository.removePicture(Mapper.pictureToPictureEntity(picture))
+    }
+
+    fun onClickRetryButton(adapter: FragmentAdapter) {
+        bindPaging(adapter)
     }
 }

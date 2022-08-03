@@ -7,7 +7,6 @@ import com.example.mygallery.data.cache.CacheDataSource
 import com.example.mygallery.data.cache.PictureDao
 import com.example.mygallery.data.cache.PictureDataBase
 import com.example.mygallery.data.cloud.CloudDataSource
-import com.example.mygallery.domain.PictureDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

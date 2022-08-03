@@ -5,4 +5,5 @@
     <string name="retry">retry</string>
     <string name="error_message_network">Please check your internet connection</string>
     <string name="btn_retry">retry</string>
+    <string name="error_message_empty_list">Gallery is empty, please add something</string>
 </resources>

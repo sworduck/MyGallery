@@ -4,7 +4,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.example.mygallery.data.Mapper
 import com.example.mygallery.domain.Picture
-import kotlin.math.max
+import com.example.mygallery.utilis.EmptyListException
 
 class PictureCachePagingSource(private val pictureDao: PictureDao): PagingSource<Int, Picture>() {
 
@@ -19,10 +19,14 @@ class PictureCachePagingSource(private val pictureDao: PictureDao): PagingSource
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Picture> {
         val pictureListCache = pictureDao.getAllPicture().map { picture-> Mapper.pictureEntityToPicture(picture)}
         val page = params.key?: 1
-        return LoadResult.Page(
-            data = pictureListCache,
-            prevKey = if(page-1<params.loadSize-1&&page>0) page-1 else null,
-            nextKey = if(page+1<params.loadSize-1&&page>0) page+1 else null
-        )
+        return if(pictureListCache.isEmpty()){
+            LoadResult.Error(EmptyListException())
+        } else {
+            LoadResult.Page(
+                data = pictureListCache,
+                prevKey = if (page - 1 < params.loadSize - 1 && page > 0) page - 1 else null,
+                nextKey = if (page + 1 < params.loadSize - 1 && page > 0) page + 1 else null
+            )
+        }
     }
 }

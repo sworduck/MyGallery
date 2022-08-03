@@ -42,6 +42,9 @@ class SearchFragment : Fragment() {
     private fun initView() {
         initRecyclerView()
         setupView()
+        binding.layoutErrorButtonRetry.setOnClickListener {
+            vm.onClickRetryButton(searchAdapter)
+        }
     }
 
     private fun initObservers() {

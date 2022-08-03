@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.mygallery.databinding.FavoriteFragmentBinding
 import com.example.mygallery.domain.Picture
+import com.example.mygallery.domain.Status
 import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -38,7 +40,20 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun initObservers() {
-
+        vm.status.observe(viewLifecycleOwner){
+            when(vm.status.value){
+                is Status.Fail -> {
+                    print("fail")
+                    binding.searchRecycler.isVisible = false
+                    binding.layoutEmptyList.isVisible = true
+                }
+                is Status.Success -> {
+                    print("success")
+                    binding.searchRecycler.isVisible = true
+                    binding.layoutEmptyList .isVisible = false
+                }
+            }
+        }
     }
 
     private fun initRecyclerView() {
@@ -52,10 +67,6 @@ class FavoriteFragment : Fragment() {
     }
 
     private fun onFeaturedClick(picture: Picture) {
-        when (picture.favorite) {
-            true -> {
-                vm.remove(picture)
-            }
-        }
+        vm.remove(picture)
     }
 }

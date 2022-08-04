@@ -17,6 +17,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataBaseModule {
+
     @Provides
     @Singleton
     fun provideDataBase(@ApplicationContext context: Context): PictureDataBase {
@@ -47,5 +48,4 @@ object DataBaseModule {
     ): PictureRepository {
         return PictureRepository(cloudDataSource, cacheDataSource)
     }
-
 }

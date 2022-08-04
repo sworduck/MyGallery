@@ -8,7 +8,6 @@ import com.example.mygallery.utilis.EmptyListException
 
 class PictureCachePagingSource(private val pictureDao: PictureDao): PagingSource<Int, Picture>() {
 
-
     override fun getRefreshKey(state: PagingState<Int, Picture>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)

@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
+import androidx.paging.cachedIn
 import com.example.mygallery.databinding.SearchFragmentBinding
 import com.example.mygallery.domain.Picture
-import com.example.mygallery.domain.Status.Fail
-import com.example.mygallery.domain.Status.Success
 import com.example.mygallery.presentation.adapter.FragmentAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SearchFragment : Fragment() {
@@ -37,51 +40,50 @@ class SearchFragment : Fragment() {
 
     private fun initView() {
         initRecyclerView()
-        setupView()
         binding.layoutErrorButtonRetry.setOnClickListener {
-            vm.onClickRetryButton(searchAdapter)
+            setupView()
         }
     }
 
     private fun initObservers() {
-        vm.status.observe(viewLifecycleOwner) {
-            when (vm.status.value) {
-                is Fail -> {
-                    print("fail")
-                    binding.searchRecycler.isVisible = false
-                    binding.layoutErrorNetwork.isVisible = true
+        lifecycleScope.launch {
+            searchAdapter.loadStateFlow
+                .collectLatest { loadState ->
+                    when (loadState.refresh) {
+                        is LoadState.Loading -> {
+                            binding.searchRecycler.isVisible = true
+                            binding.layoutErrorNetwork.isVisible = false
+                        }
+                        is LoadState.Error -> {
+                            binding.searchRecycler.isVisible = false
+                            binding.layoutErrorNetwork.isVisible = true
+                        }
+                    }
                 }
-                is Success -> {
-                    print("success")
-                    binding.searchRecycler.isVisible = true
-                    binding.layoutErrorNetwork.isVisible = false
-                }
-            }
         }
+        setupView()
     }
-
 
     private fun setupView() {
-        vm.bindPaging(searchAdapter)
-    }
-
-
-    private fun initRecyclerView() {
-        binding.searchRecycler.apply {
-            adapter = searchAdapter
+        lifecycleScope.launch {
+            vm.pictureList.cachedIn(lifecycleScope)
+                .collectLatest {
+                    searchAdapter.submitData(it)
+                }
         }
     }
 
-    private fun onFeaturedClick(picture: Picture) {
-        when (picture.favorite) {
-            true -> {
+    private fun initRecyclerView() {
+        binding.searchRecycler.adapter = searchAdapter
+    }
+
+    private fun onFeaturedClick(picture: Picture) =
+        if (picture.favorite) {
                 picture.favorite = false
                 vm.removePicture(picture)
             }
-            false -> {
+            else {
                 picture.favorite = true
                 vm.addPicture(picture)
             }
-        }
-    }
 }

@@ -5,31 +5,46 @@ import androidx.paging.PagingState
 import com.example.mygallery.data.Mapper
 import com.example.mygallery.data.PictureRepository
 import com.example.mygallery.domain.Picture
-
+import java.lang.Integer.max
 
 class PictureCloudPagingSource(private val service: ApiService) : PagingSource<Int, Picture>() {
 
+    companion object {
+        private const val STARTING_KEY = 0
+    }
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Picture> {
+        // If params.key is null, it is the first load, so we start loading with STARTING_KEY
         try {
-            val page = params.key ?: 1
+            val startKey = params.key ?: STARTING_KEY
+
+            // We fetch as many articles as hinted to by params.loadSize
+            val range = startKey.until(startKey + params.loadSize)
+
             val pictureCloud =
-                service.fetchPictureList(page, 10).map { Mapper.pictureCloudToPicture(it) }
+                service.fetchPictureList(startKey, 10).map { Mapper.pictureCloudToPicture(it) }
             pictureCloud.forEach {
-                if (it.id.toInt() in PictureRepository.pictureListIdFromCache) {
+                if(it.id.toInt() in PictureRepository.pictureListIdFromCache) {
                     it.favorite = true
                 }
             }
-
             return LoadResult.Page(
                 data = pictureCloud,
-                prevKey = if (page - 1 < params.loadSize - 1 && page > 0) page - 1 else null,
-                nextKey = if (page + 1 < params.loadSize - 1 && page > 0) page + 1 else null
+                prevKey = when (startKey) {
+                    STARTING_KEY -> null
+                    else -> when (val prevKey =
+                        ensureValidKey(key = range.first - params.loadSize)) {
+                        // We're at the start, there's nothing more to load
+                        STARTING_KEY -> null
+                        else -> prevKey
+                    }
+                },
+                nextKey = range.last + 1
             )
-        } catch (e: Exception) {
+        }catch (e:Exception){
             return LoadResult.Error(e)
         }
     }
-
 
     override fun getRefreshKey(state: PagingState<Int, Picture>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
@@ -37,4 +52,6 @@ class PictureCloudPagingSource(private val service: ApiService) : PagingSource<I
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
         }
     }
+
+    private fun ensureValidKey(key: Int) = max(STARTING_KEY, key)
 }

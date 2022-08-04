@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.example.mygallery.domain.Picture
 
 class PictureDiffUtilCallback : DiffUtil.ItemCallback<Picture>() {
+
     override fun areItemsTheSame(oldItem: Picture, newItem: Picture): Boolean {
         return oldItem.id == newItem.id
     }

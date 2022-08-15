@@ -13,6 +13,7 @@ import androidx.paging.cachedIn
 import com.example.mygallery.databinding.SearchFragmentBinding
 import com.example.mygallery.domain.Picture
 import com.example.mygallery.presentation.adapter.FragmentAdapter
+import com.example.mygallery.presentation.adapter.SearchLoadStateAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -40,7 +41,7 @@ class SearchFragment : Fragment() {
 
     private fun initView() {
         initRecyclerView()
-        binding.layoutErrorButtonRetry.setOnClickListener {
+        binding.mainRetryButton.setOnClickListener {
             setupView()
         }
     }
@@ -74,7 +75,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        binding.searchRecycler.adapter = searchAdapter
+        binding.searchRecycler.adapter = searchAdapter.withLoadStateFooter(
+            footer = SearchLoadStateAdapter{ searchAdapter.retry() }
+        )
     }
 
     private fun onFeaturedClick(picture: Picture) =

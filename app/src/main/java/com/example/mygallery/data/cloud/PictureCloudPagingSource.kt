@@ -10,7 +10,7 @@ import java.lang.Integer.max
 class PictureCloudPagingSource(private val service: ApiService) : PagingSource<Int, Picture>() {
 
     companion object {
-        private const val STARTING_KEY = 0
+        private const val STARTING_KEY = 1
     }
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Picture> {
@@ -39,7 +39,7 @@ class PictureCloudPagingSource(private val service: ApiService) : PagingSource<I
                         else -> prevKey
                     }
                 },
-                nextKey = range.last + 1
+                nextKey = range.last + 10
             )
         }catch (e:Exception){
             return LoadResult.Error(e)
@@ -48,8 +48,8 @@ class PictureCloudPagingSource(private val service: ApiService) : PagingSource<I
 
     override fun getRefreshKey(state: PagingState<Int, Picture>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
-            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
-                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)
+            state.closestPageToPosition(anchorPosition)?.prevKey?.plus(10)
+                ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(10)
         }
     }
 
